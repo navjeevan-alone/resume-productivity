@@ -480,9 +480,9 @@ function initializeDatabaseIfEmpty(): void {
     const initialCheckpoint: Checkpoint = {
       id: generateId(),
       task_id: taskId,
-      completed_work: 'Implemented the signup form UI and basic layout structure.',
-      remaining_work: 'Input validation, error message tooltips, and state persistence.',
-      next_action: 'Complete input validation on email and password fields.',
+      completed_work: "",
+      remaining_work: "",
+      next_action: "",
       created_at: pastTime,
     };
 

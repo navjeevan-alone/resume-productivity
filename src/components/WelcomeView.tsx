@@ -74,7 +74,9 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({
           <div className="absolute top-0 left-0 w-1 h-full bg-[#A78BFA]" />
 
           <div className="flex items-center justify-between text-xs text-[#71717A] mb-2">
-            <span className="uppercase tracking-wider font-semibold">Last active task</span>
+            <span className="uppercase tracking-wider font-semibold">
+              Last active task
+            </span>
             {totalTaskDuration > 0 && (
               <span className="flex items-center gap-1 text-[#A1A1AA]">
                 <Clock size={12} />
@@ -96,13 +98,14 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({
             <p className="text-sm text-[#FFFFFF] leading-relaxed">
               {lastCheckpoint?.next_action
                 ? lastCheckpoint.next_action
-                : 'No specific next action declared. Start and define your immediate step.'}
+                : "No specific next action declared. Start and define your immediate step."}
             </p>
           </div>
 
           {lastCheckpoint?.remaining_work && (
             <p className="text-xs text-[#71717A] mt-2 line-clamp-1">
-              <span className="text-[#A1A1AA]">Unfinished:</span> {lastCheckpoint.remaining_work}
+              <span className="text-[#A1A1AA]">Unfinished:</span>{" "}
+              {lastCheckpoint.remaining_work}
             </p>
           )}
 
@@ -110,9 +113,8 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({
           <div className="mt-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
             <button
               onClick={handleResume}
-              className="flex-1 bg-white hover:bg-zinc-200 text-[#0C0C0D] font-medium h-10 px-5 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors duration-150 cursor-pointer shadow-sm"
-              autoFocus
-            >
+              className="flex-1 py-2 bg-white hover:bg-zinc-200 text-[#0C0C0D] font-medium h-10 px-5 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors duration-150 cursor-pointer shadow-sm"
+              autoFocus>
               <Play size={16} fill="#0C0C0D" />
               <span>Resume Task</span>
               <kbd className="hidden sm:inline-block text-[10px] bg-zinc-300 text-zinc-800 px-1.5 py-0.5 rounded font-mono ml-1">
@@ -122,8 +124,7 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({
 
             <button
               onClick={onChooseAnother}
-              className="bg-transparent hover:bg-[#1C1C1F] text-white border border-[#27272A] font-medium h-10 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors duration-150 cursor-pointer"
-            >
+              className="bg-transparent hover:bg-[#1C1C1F] text-white border border-[#27272A] font-medium h-10 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors duration-150 cursor-pointer">
               <ListOrdered size={15} className="text-[#A1A1AA]" />
               <span>Choose Another Task</span>
             </button>
@@ -131,8 +132,7 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({
             <button
               onClick={() => setIsCreating(true)}
               className="bg-transparent hover:bg-[#1C1C1F] text-[#A1A1AA] hover:text-white border border-[#27272A] font-medium h-10 px-3 rounded-lg text-sm flex items-center justify-center gap-1.5 transition-colors duration-150 cursor-pointer"
-              title="Create a new task"
-            >
+              title="Create a new task">
               <Plus size={16} />
               <span className="sm:hidden">New Task</span>
             </button>
@@ -144,14 +144,16 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({
           <div className="w-12 h-12 rounded-full bg-[#1C1C1F] border border-[#27272A] flex items-center justify-center text-[#A78BFA] mx-auto mb-3">
             <Plus size={20} />
           </div>
-          <h2 className="text-base font-semibold text-white mb-1">No tasks in progress</h2>
+          <h2 className="text-base font-semibold text-white mb-1">
+            No tasks in progress
+          </h2>
           <p className="text-sm text-[#A1A1AA] max-w-sm mx-auto mb-4">
-            Resume helps you focus on one clear task at a time. Enter what you want to work on today.
+            Resume helps you focus on one clear task at a time. Enter what you
+            want to work on today.
           </p>
           <button
             onClick={() => setIsCreating(true)}
-            className="bg-white hover:bg-zinc-200 text-[#0C0C0D] font-medium h-10 px-6 rounded-lg text-sm inline-flex items-center gap-2 transition-colors duration-150 cursor-pointer"
-          >
+            className="bg-white hover:bg-zinc-200 text-[#0C0C0D] font-medium h-10 px-6 rounded-lg text-sm inline-flex items-center gap-2 transition-colors duration-150 cursor-pointer">
             <Plus size={16} />
             <span>Create First Task</span>
           </button>
@@ -162,10 +164,11 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({
       {isCreating && (
         <form
           onSubmit={handleCreateSubmit}
-          className="w-full bg-[#151517] border border-[#A78BFA] rounded-xl p-4 mb-4 text-left transition-all"
-        >
+          className="w-full bg-[#151517] border border-[#A78BFA] rounded-xl p-4 mb-4 text-left transition-all">
           <div className="flex items-center justify-between mb-2">
-            <label htmlFor="new-task-input" className="text-xs font-semibold text-white uppercase tracking-wider">
+            <label
+              htmlFor="new-task-input"
+              className="text-xs font-semibold text-white uppercase tracking-wider">
               New Task Title
             </label>
             <button
@@ -174,8 +177,7 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({
                 setIsCreating(false);
                 setError(null);
               }}
-              className="text-[#71717A] hover:text-white p-1"
-            >
+              className="text-[#71717A] hover:text-white p-1">
               <X size={14} />
             </button>
           </div>
@@ -195,8 +197,7 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({
             />
             <button
               type="submit"
-              className="bg-white hover:bg-zinc-200 text-[#0C0C0D] font-medium px-4 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-colors cursor-pointer"
-            >
+              className="bg-white hover:bg-zinc-200 text-[#0C0C0D] font-medium px-4 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-colors cursor-pointer">
               <span>Start</span>
               <ArrowRight size={14} />
             </button>
@@ -207,11 +208,16 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({
 
       {/* Dismiss / Close Note */}
       <div className="flex items-center justify-between w-full text-xs text-[#71717A] px-1">
-        <span>Press <kbd className="bg-[#1C1C1F] border border-[#27272A] px-1 rounded text-[11px] text-[#A1A1AA]">Esc</kbd> or dismiss anytime</span>
+        <span>
+          Press{" "}
+          <kbd className="bg-[#1C1C1F] border border-[#27272A] px-1 rounded text-[11px] text-[#A1A1AA]">
+            Esc
+          </kbd>{" "}
+          or dismiss anytime
+        </span>
         <button
           onClick={onDismiss}
-          className="hover:text-white transition-colors underline cursor-pointer"
-        >
+          className="hover:text-white transition-colors underline cursor-pointer">
           Dismiss window
         </button>
       </div>

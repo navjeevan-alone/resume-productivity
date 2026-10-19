@@ -1,7 +1,7 @@
 import React from 'react';
 import { Minus, Square, X, PlayCircle, History, ListTodo, Settings,  Shrink, Expand } from 'lucide-react';
 import { AppView } from '../types.ts';
-import { minimizeWindow, maximizeWindow, closeWindow } from '../lib/desktop.ts';
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 interface TitleBarProps {
   currentView: AppView;
@@ -12,6 +12,8 @@ interface TitleBarProps {
   activeTaskTitle?: string;
   onOpenSettings: () => void;
 }
+
+const appWindow = getCurrentWindow();
 
 export const TitleBar: React.FC<TitleBarProps> = ({
   currentView,
@@ -30,14 +32,13 @@ export const TitleBar: React.FC<TitleBarProps> = ({
           R
         </div>
         <span className="font-semibold text-white tracking-tight">Resume</span>
-        
+
         {/* Active task pill */}
         {hasActiveSession && activeTaskTitle && (
           <button
-            onClick={() => setCurrentView('active')}
+            onClick={() => setCurrentView("active")}
             className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#1C1C1F] border border-[#27272A] text-xs text-white max-w-[200px] truncate hover:border-[#A78BFA] transition-colors"
-            title="Jump to active session"
-          >
+            title="Jump to active session">
             <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse"></span>
             <span className="truncate">{activeTaskTitle}</span>
           </button>
@@ -47,40 +48,44 @@ export const TitleBar: React.FC<TitleBarProps> = ({
       {/* Center navigation shortcuts */}
       <div className="flex items-center gap-1">
         <button
-          onClick={() => setCurrentView(hasActiveSession ? 'active' : 'welcome')}
+          onClick={() =>
+            setCurrentView(hasActiveSession ? "active" : "welcome")
+          }
           className={`px-2.5 py-1 rounded text-xs transition-colors flex items-center gap-1.5 ${
-            currentView === 'welcome' || currentView === 'active'
-              ? 'bg-[#1C1C1F] text-white border border-[#27272A]'
-              : 'hover:text-white hover:bg-[#151517]'
+            currentView === "welcome" || currentView === "active"
+              ? "bg-[#1C1C1F] text-white border border-[#27272A]"
+              : "hover:text-white hover:bg-[#151517]"
           }`}
-          title="Startup & Session view"
-        >
-          <PlayCircle size={14} className={hasActiveSession ? "text-[#4ADE80]" : "text-[#A78BFA]"} />
-          <span className="hidden md:inline">{hasActiveSession ? 'Active Session' : 'Startup'}</span>
+          title="Startup & Session view">
+          <PlayCircle
+            size={14}
+            className={hasActiveSession ? "text-[#4ADE80]" : "text-[#A78BFA]"}
+          />
+          <span className="hidden md:inline">
+            {hasActiveSession ? "Active Session" : "Startup"}
+          </span>
         </button>
 
         <button
-          onClick={() => setCurrentView('task_list')}
+          onClick={() => setCurrentView("task_list")}
           className={`px-2.5 py-1 rounded text-xs transition-colors flex items-center gap-1.5 ${
-            currentView === 'task_list'
-              ? 'bg-[#1C1C1F] text-white border border-[#27272A]'
-              : 'hover:text-white hover:bg-[#151517]'
+            currentView === "task_list"
+              ? "bg-[#1C1C1F] text-white border border-[#27272A]"
+              : "hover:text-white hover:bg-[#151517]"
           }`}
-          title="All incomplete tasks"
-        >
+          title="All incomplete tasks">
           <ListTodo size={14} />
           <span className="hidden md:inline">Tasks</span>
         </button>
 
         <button
-          onClick={() => setCurrentView('history')}
+          onClick={() => setCurrentView("history")}
           className={`px-2.5 py-1 rounded text-xs transition-colors flex items-center gap-1.5 ${
-            currentView === 'history'
-              ? 'bg-[#1C1C1F] text-white border border-[#27272A]'
-              : 'hover:text-white hover:bg-[#151517]'
+            currentView === "history"
+              ? "bg-[#1C1C1F] text-white border border-[#27272A]"
+              : "hover:text-white hover:bg-[#151517]"
           }`}
-          title="Completed tasks history"
-        >
+          title="Completed tasks history">
           <History size={14} />
           <span className="hidden md:inline">History</span>
         </button>
@@ -91,16 +96,16 @@ export const TitleBar: React.FC<TitleBarProps> = ({
         <button
           onClick={() => setIsCompact(!isCompact)}
           className="p-1.5 rounded hover:bg-[#1C1C1F] hover:text-white text-[#71717A] transition-colors"
-          title={isCompact ? "Expand to Standard View" : "Compact Desktop Mode"}
-        >
+          title={
+            isCompact ? "Expand to Standard View" : "Compact Desktop Mode"
+          }>
           {isCompact ? <Expand size={13} /> : <Shrink size={13} />}
         </button>
 
         <button
           onClick={onOpenSettings}
           className="p-1.5 rounded hover:bg-[#1C1C1F] hover:text-white text-[#71717A] transition-colors"
-          title="Settings & Diagnostics"
-        >
+          title="Settings & Diagnostics">
           <Settings size={13} />
         </button>
 
@@ -108,24 +113,21 @@ export const TitleBar: React.FC<TitleBarProps> = ({
 
         {/* Windows Native Controls */}
         <button
-          onClick={minimizeWindow}
+          onClick={() => void appWindow.minimize()}
           className="w-7 h-7 flex items-center justify-center hover:bg-[#1C1C1F] hover:text-white rounded transition-colors"
-          title="Minimize"
-        >
+          title="Minimize">
           <Minus size={13} />
         </button>
         <button
-          onClick={maximizeWindow}
+          onClick={() => void appWindow.toggleMaximize()}
           className="w-7 h-7 flex items-center justify-center hover:bg-[#1C1C1F] hover:text-white rounded transition-colors"
-          title="Maximize"
-        >
+          title="Maximize">
           <Square size={11} />
         </button>
         <button
-          onClick={closeWindow}
+          onClick={() => void appWindow.close()}
           className="w-7 h-7 flex items-center justify-center hover:bg-[#EF4444] hover:text-white rounded transition-colors"
-          title="Close / Dismiss"
-        >
+          title="Close / Dismiss">
           <X size={14} />
         </button>
       </div>
