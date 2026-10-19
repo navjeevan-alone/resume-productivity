@@ -1,5 +1,5 @@
 import React from 'react';
-import { Minus, Square, X, PlayCircle, History, ListTodo, Settings, Monitor, Shrink, Expand } from 'lucide-react';
+import { Minus, Square, X, PlayCircle, History, ListTodo, Settings,  Shrink, Expand } from 'lucide-react';
 import { AppView } from '../types.ts';
 import { minimizeWindow, maximizeWindow, closeWindow } from '../lib/desktop.ts';
 
@@ -88,7 +88,14 @@ export const TitleBar: React.FC<TitleBarProps> = ({
 
       {/* Right controls: Compact toggle, Settings, Windows buttons */}
       <div className="flex items-center gap-1">
-     
+        <button
+          onClick={() => setIsCompact(!isCompact)}
+          className="p-1.5 rounded hover:bg-[#1C1C1F] hover:text-white text-[#71717A] transition-colors"
+          title={isCompact ? "Expand to Standard View" : "Compact Desktop Mode"}
+        >
+          {isCompact ? <Expand size={13} /> : <Shrink size={13} />}
+        </button>
+
         <button
           onClick={onOpenSettings}
           className="p-1.5 rounded hover:bg-[#1C1C1F] hover:text-white text-[#71717A] transition-colors"
@@ -96,7 +103,31 @@ export const TitleBar: React.FC<TitleBarProps> = ({
         >
           <Settings size={13} />
         </button>
- 
+
+        <div className="h-4 w-[1px] bg-[#27272A] mx-1"></div>
+
+        {/* Windows Native Controls */}
+        <button
+          onClick={minimizeWindow}
+          className="w-7 h-7 flex items-center justify-center hover:bg-[#1C1C1F] hover:text-white rounded transition-colors"
+          title="Minimize"
+        >
+          <Minus size={13} />
+        </button>
+        <button
+          onClick={maximizeWindow}
+          className="w-7 h-7 flex items-center justify-center hover:bg-[#1C1C1F] hover:text-white rounded transition-colors"
+          title="Maximize"
+        >
+          <Square size={11} />
+        </button>
+        <button
+          onClick={closeWindow}
+          className="w-7 h-7 flex items-center justify-center hover:bg-[#EF4444] hover:text-white rounded transition-colors"
+          title="Close / Dismiss"
+        >
+          <X size={14} />
+        </button>
       </div>
     </header>
   );

@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "build:desktop": "tauri build",
+    "build:exe": "tauri build --bundles nsis",
+    "build:msi": "tauri build --bundles msi"
   },
   "dependencies": {
     "react": "^19.1.0",

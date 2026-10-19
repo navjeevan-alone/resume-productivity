@@ -267,12 +267,12 @@ export function runAutomatedTestSuite(): TestResult[] {
   // 11. Excluding uncertain sleep or shutdown time from automatic work-time calculations
   runTest(11, 'Conservative recovery excludes unverified sleep time', () => {
     const baseDuration = 600; // 10 mins declared
-    const gapSeconds = 3600; // 1 hour computer sleep
+    // const gapSeconds = 3600; // 1 hour computer sleep
 
     // Conservative recovery rule: do NOT add gapSeconds
     const recoveredDuration = baseDuration; // preserved
     if (recoveredDuration !== 600) {
-      throw new Error('Conservative recovery erroneously counted sleep time');
+      throw new Error("Conservative recovery erroneously counted sleep time");
     }
   });
 

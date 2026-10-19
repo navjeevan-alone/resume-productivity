@@ -1,5 +1,5 @@
 import React from 'react';
-import { History, Clock, Calendar, CheckCircle2, RotateCcw, X, Trash2 } from 'lucide-react';
+import {  Clock, Calendar, CheckCircle2, RotateCcw, X, Trash2 } from 'lucide-react';
 import { Task, Checkpoint } from '../types.ts';
 import { playGentleClick } from '../lib/desktop.ts';
 

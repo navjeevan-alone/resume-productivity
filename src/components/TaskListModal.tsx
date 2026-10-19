@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Plus, CheckCircle2, Trash2, Clock, Calendar, ArrowRight, X } from 'lucide-react';
+import { Play, Plus, CheckCircle2, Trash2, Clock, Calendar,   X } from 'lucide-react';
 import { Task, Checkpoint } from '../types.ts';
 import { playGentleClick } from '../lib/desktop.ts';
 

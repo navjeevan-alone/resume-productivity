@@ -80,6 +80,49 @@ export async function setWindowsAutoStart(enable: boolean): Promise<boolean> {
   return true;
 }
 
+/**
+ * Registers a listener for Windows shutdown / logoff signal.
+ * In Tauri, Rust intercepts WM_QUERYENDSESSION / WM_ENDSESSION and emits "windows-shutdown-requested".
+ */
+export function onWindowsShutdownRequested(callback: () => void): () => void {
+  let unlistenFn: (() => void) | null = null;
+
+  if (typeof window !== 'undefined' && (window as unknown as { __TAURI__?: { event?: { listen: (name: string, cb: () => void) => Promise<() => void> } } }).__TAURI__?.event?.listen) {
+    (window as unknown as { __TAURI__: { event: { listen: (name: string, cb: () => void) => Promise<() => void> } } }).__TAURI__.event.listen('windows-shutdown-requested', () => {
+      callback();
+    }).then((unsub) => {
+      unlistenFn = unsub;
+    }).catch(console.error);
+  }
+
+  // Also hook browser beforeunload for testing
+  const beforeUnloadHandler = () => {
+    // browser warning
+  };
+  window.addEventListener('beforeunload', beforeUnloadHandler);
+
+  return () => {
+    if (unlistenFn) unlistenFn();
+    window.removeEventListener('beforeunload', beforeUnloadHandler);
+  };
+}
+
+/**
+ * Tells Windows & Tauri to proceed with shutting down after checkpoint has been saved
+ */
+export async function allowWindowsShutdown(): Promise<void> {
+  if (typeof window !== 'undefined' && window.__TAURI__?.core?.invoke) {
+    try {
+      await window.__TAURI__.core.invoke('allow_windows_shutdown');
+    } catch (e) {
+      console.warn('Proceed shutdown invoke error:', e);
+    }
+  } else {
+    console.log('[Desktop] Checkpoint saved. Shutdown / logoff allowed.');
+  }
+}
+
+
 export function playGentleClick(): void {
   try {
     const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;

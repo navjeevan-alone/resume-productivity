@@ -3,7 +3,7 @@
  * Built with Tauri 2 + React + TypeScript + Local-First Persistence
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Task, Checkpoint, WorkSession, AppSettings, AppView, InterruptedSessionInfo } from './types.ts';
 import {
   getTasks,
@@ -36,11 +36,14 @@ import { CheckpointModal } from './components/CheckpointModal.tsx';
 import { HistoryModal } from './components/HistoryModal.tsx';
 import { InterruptionModal } from './components/InterruptionModal.tsx';
 import { SettingsModal } from './components/SettingsModal.tsx';
+import { ShutdownCheckpointModal } from './components/ShutdownCheckpointModal.tsx';
+import { onWindowsShutdownRequested } from './lib/desktop.ts';
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [settings, setSettings] = useState<AppSettings>(getSettings());
   const [currentView, setCurrentView] = useState<AppView>('welcome');
+  const [isShutdownModalOpen, setIsShutdownModalOpen] = useState(false);
 
   // Active Session & Task State
   const [activeSession, setActiveSession] = useState<WorkSession | null>(null);
@@ -85,9 +88,18 @@ export default function App() {
     }
   }, []);
 
-  // Initial load
+  // Initial load & shutdown hook
   useEffect(() => {
     loadData();
+
+    // Listen for OS shutdown or logoff events
+    const cleanupShutdown = onWindowsShutdownRequested(() => {
+      setIsShutdownModalOpen(true);
+    });
+
+    return () => {
+      cleanupShutdown();
+    };
   }, [loadData]);
 
   // Derived maps for rapid access
@@ -398,6 +410,34 @@ export default function App() {
           onUpdateSettings={handleUpdateSettings}
           onClose={() => setIsSettingsModalOpen(false)}
           onDataReload={loadData}
+          onTriggerShutdownModal={() => setIsShutdownModalOpen(true)}
+        />
+      )}
+
+      {/* Laptop Shutdown / Logoff Checkpoint Prompt */}
+      {isShutdownModalOpen && (
+        <ShutdownCheckpointModal
+          task={activeTask || lastIncompleteTask}
+          latestCheckpoint={activeTask ? latestCheckpoint : (lastIncompleteTask ? checkpointsMap[lastIncompleteTask.id] : null)}
+          sessionDuration={activeSession ? activeSession.duration_seconds : (lastIncompleteTask ? totalTimeMap[lastIncompleteTask.id] || 0 : 0)}
+          onSaveAndProceed={(completed, nextAct) => {
+            const targetTask = activeTask || lastIncompleteTask;
+            if (targetTask) {
+              createCheckpoint(targetTask.id, completed, '', nextAct);
+              if (activeSession) {
+                pauseSession(activeSession.id);
+              }
+            }
+            setIsShutdownModalOpen(false);
+            loadData();
+          }}
+          onDismissAndProceed={() => {
+            if (activeSession) {
+              pauseSession(activeSession.id);
+            }
+            setIsShutdownModalOpen(false);
+          }}
+          soundEnabled={settings.sound_enabled}
         />
       )}
     </div>

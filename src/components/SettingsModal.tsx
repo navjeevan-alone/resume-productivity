@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Check, Monitor, Volume2, VolumeX, Download, Upload, RefreshCw, AlertTriangle, Play, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { X,  Monitor, Volume2, VolumeX, Download, Upload,  Play, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { AppSettings } from '../types.ts';
 import { setWindowsAutoStart, isTauri, playGentleClick } from '../lib/desktop.ts';
 import { exportDatabaseBackup, importDatabaseBackup, clearDatabase } from '../lib/storage.ts';
@@ -10,6 +10,7 @@ interface SettingsModalProps {
   onUpdateSettings: (newSettings: AppSettings) => void;
   onClose: () => void;
   onDataReload: () => void;
+  onTriggerShutdownModal?: () => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -17,6 +18,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onUpdateSettings,
   onClose,
   onDataReload,
+  onTriggerShutdownModal,
 }) => {
   const [localSettings, setLocalSettings] = useState<AppSettings>(settings);
   const [testResults, setTestResults] = useState<TestResult[] | null>(null);
@@ -138,6 +140,34 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
             <div className="mt-3 pt-2 border-t border-[#27272A] text-[11px] text-[#71717A] font-mono">
               Target location: %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\Resume.lnk
+            </div>
+          </div>
+
+          {/* Laptop Shutdown Intercept & Checkpoint */}
+          <div className="bg-[#1C1C1F] border border-[#27272A] rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <div className="text-sm font-semibold text-white flex items-center gap-1.5">
+                  <span>Laptop Shutdown / Wrap-Up Prompt</span>
+                  <span className="text-[10px] bg-[#A78BFA]/20 text-[#A78BFA] px-1.5 py-0.2 rounded font-mono">
+                    Win32 Hook
+                  </span>
+                </div>
+                <p className="text-xs text-[#71717A] mt-1 max-w-sm">
+                  Intercepts Windows shutdown to ask what was accomplished and your plan for the next boot.
+                </p>
+              </div>
+              {onTriggerShutdownModal && (
+                <button
+                  onClick={() => {
+                    onClose();
+                    onTriggerShutdownModal();
+                  }}
+                  className="bg-white hover:bg-zinc-200 text-[#0C0C0D] font-medium px-3 py-1.5 rounded text-xs transition-colors cursor-pointer"
+                >
+                  Test Prompt
+                </button>
+              )}
             </div>
           </div>
 
